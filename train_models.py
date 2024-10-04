@@ -9,8 +9,8 @@ from models import CNNEmulator, LatentODE
 
 
 def loss_fn(model, batch):
-    # Fill
-    raise NotImplementedError
+    # MSE loss
+    return jnp.mean((model(batch) - batch) ** 2)
 
 def train(
     model: CNNEmulator,
@@ -30,8 +30,8 @@ def train(
         opt_state: optax.OptState,
         batch: Float[Array, " n_samples n_res n_res"],
     ) -> tuple:
-        loss, grads = eqx.filter_value_and_grad(#Fill here)
-        updates, opt_state = optimizer.update(#Fill here)
+        loss, grads = eqx.filter_value_and_grad(loss_fn)#Fill here)
+        updates, opt_state = optimizer.update(loss, grads) #Fill here)
         model = eqx.apply_updates(model, updates)
         return model, opt_state, loss
     
